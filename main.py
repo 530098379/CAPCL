@@ -107,6 +107,8 @@ if __name__ == "__main__":
 				REC_flag = False
 				REP_flag = False
 				reporting_flag = True
+				Recordkeeping_V_flag = True
+				Reporting_V_flag = True
 				REC_cnt = 0
 				REP_cnt = 0
 				# 使用文档对象得到页面内容
@@ -127,7 +129,8 @@ if __name__ == "__main__":
 							if "the following recordkeeping violations:" in out.get_text():
 								sheet.write(count, 4, out.get_text())
 
-							if "Recordkeeping Violations" in out.get_text():
+							if Recordkeeping_V_flag and "Recordkeeping Violations" in out.get_text():
+								Recordkeeping_V_flag = False
 								REC_flag = True
 								sheet.write(count, 5, "1")
 
@@ -140,7 +143,8 @@ if __name__ == "__main__":
 								str_strat = out.get_text().rfind(".") + len(".")
 								sheet.write(count, 7, (out.get_text())[str_strat:].strip())
 
-							if "Reporting Violations" in out.get_text():
+							if Reporting_V_flag and "Reporting Violations" in out.get_text():
+								Reporting_V_flag = False
 								REC_flag = False
 								REP_flag = True
 								sheet.write(count, 8, "1")
