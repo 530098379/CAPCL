@@ -63,6 +63,12 @@ if __name__ == "__main__":
 				if out_flag:
 					break
 				pdf_url = "https://www.dol.gov" + (j.contents)[7].select("a")[0]['href']
+
+				r = requests.get(pdf_url)
+				pdf_file_path = os.getcwd() + r"\temp.pdf";
+				with open(pdf_file_path, 'wb') as f:
+					f.write(r.content)
+
 				CAPDataArray = j.text.split("\n")
 
 				print("Union Name:" + str(CAPDataArray[1]), flush = True)
@@ -73,10 +79,7 @@ if __name__ == "__main__":
 				sheet.write(count,1, CAPDataArray[2])
 				sheet.write(count,2, CAPDataArray[3])
 
-				pdf_url = r"C:\Work\python\CAPCL\natca_localzau_10-30-18_redacted.pdf"
-				pdf_url2 = r"" + pdf_url
-				#fp = open(r'' + pdf_url,'rb')
-				fp = open(pdf_url,'rb')
+				fp = open(pdf_file_path,'rb')
 				# 创建一个与文档关联的解释器
 				parser = PDFParser(fp)
 				# PDF文档对象
@@ -147,7 +150,10 @@ if __name__ == "__main__":
 				count = count + 1
 				# 延迟2秒，防止访问太快
 				time.sleep(2)
+				fp.close()
 				out_flag = True
+				if(os.path.exists(pdf_file_path)):
+					os.remove(pdf_file_path)
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
 
