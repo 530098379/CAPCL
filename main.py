@@ -60,6 +60,8 @@ if __name__ == "__main__":
 
 			# 循环打印输出
 			for j in data_union:
+				if out_flag:
+					break
 				pdf_url = "https://www.dol.gov" + (j.contents)[7].select("a")[0]['href']
 				CAPDataArray = j.text.split("\n")
 
@@ -71,7 +73,7 @@ if __name__ == "__main__":
 				sheet.write(count,1, CAPDataArray[2])
 				sheet.write(count,2, CAPDataArray[3])
 
-				fp = open('C:\Work\python\CAPCL\ATU_LU618_01-23-20_Redacted.pdf','rb')
+				fp = open('C:\Work\python\CAPCL\natca_localzau_10-30-18_redacted.pdf','rb')
 
 				# 创建一个与文档关联的解释器
 				parser = PDFParser(fp)
@@ -104,8 +106,6 @@ if __name__ == "__main__":
 							if "LM Number:" in out.get_text():
 								str_strat = out.get_text().find("LM Number:") + len("LM Number:")
 								sheet.write(count, 3, (out.get_text())[str_strat:].strip())
-								#out_flag = True
-								#break
 
 							if "the following recordkeeping violations:" in out.get_text():
 								sheet.write(count, 4, out.get_text())
@@ -122,7 +122,7 @@ if __name__ == "__main__":
 				count = count + 1
 				# 延迟2秒，防止访问太快
 				time.sleep(2)
-			out_flag = True
+				out_flag = True
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
 
