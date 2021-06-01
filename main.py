@@ -23,19 +23,18 @@ if __name__ == "__main__":
 	question_text = "" #输出字符串
 	last_num = 0 #最后一次的工会编号
 	last_year = datetime.datetime.now().year # 最后一次的年份，默认值为本年
-	year = ""
 	file_year = ""
 	# 文件名
 	excel_file_name = os.getcwd() + "\\result_" + \
 		datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".xls"
 
 	# 获取最后一次的工会编号以及年份
-	my_file = Path("./the_last_dance.txt")
-	if my_file.is_file():
-		with open('./the_last_dance.txt', 'r') as f:
-			last_data = (f.readline()).split(",")
-			last_num = int(last_data[0])
-			last_year = int(last_data[1])
+	#my_file = Path("./the_last_dance.txt")
+	#if my_file.is_file():
+		#with open('./the_last_dance.txt', 'r') as f:
+			#last_data = (f.readline()).split(",")
+			#last_num = int(last_data[0])
+			#last_year = int(last_data[1])
 
 	# 做成Excel文件
 	out_flag = False
@@ -43,22 +42,12 @@ if __name__ == "__main__":
 	workbook = xlwt.Workbook()
 	sheet = workbook.add_sheet("Sheet Name1")
 
-	# 读取文件里面的工会代码
-	excel_data = xlrd.open_workbook("lm3_auditor_input.xls")
-	table = excel_data.sheet_by_index(0)
-	del excel_data
-
 	try:
-		for rowNum in range(table.nrows):
-			rowVale = table.row_values(rowNum)
-			file_num = int(rowVale[0]) # 获取Excel第一列，工会代码
-
-			# 如果当年工会编码小于最后一次的编码，则跳过去
-			if file_num < last_num:
-				continue
-
+		for year in range(last_year - 1,last_year):
+			if out_flag:
+				break
 			# 获取cookie
-			url_cok = "https://www.dol.gov/agencies/olms/audits/2020"
+			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
 			cookie_jar = r_cok.cookies
 
@@ -71,8 +60,6 @@ if __name__ == "__main__":
 
 			# 循环打印输出
 			for j in data_union:
-				if out_flag:
-					break
 				pdf_url = "https://www.dol.gov" + (j.contents)[7].select("a")[0]['href']
 				CAPDataArray = j.text.split("\n")
 
@@ -106,8 +93,6 @@ if __name__ == "__main__":
 
 				# 使用文档对象得到页面内容
 				for page in doc.get_pages():
-					if out_flag:
-						break
 					# 使用页面解释器读取
 					interpreter.process_page(page)
 					# 使用聚合器获得内容
@@ -124,16 +109,12 @@ if __name__ == "__main__":
 
 							if "the following recordkeeping violations:" in out.get_text():
 								sheet.write(count, 4, out.get_text())
-								out_flag = True
-								break
 
 							if "Recordkeeping Violations" in out.get_text():
 								sheet.write(count, 5, "1")
 
 							if "fiscal year ended" in out.get_text():
 								sheet.write(count, 6, out.get_text())
-								out_flag = True
-								break
 
 							if "Reporting Violations" in out.get_text():
 								sheet.write(count, 7, "1")
@@ -141,6 +122,7 @@ if __name__ == "__main__":
 				count = count + 1
 				# 延迟2秒，防止访问太快
 				time.sleep(2)
+			out_flag = True
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
 
@@ -154,7 +136,7 @@ if __name__ == "__main__":
 	finally:
 		# 中断或者异常，记录最后的工会编码以及年份
 		with open('./the_last_dance.txt', 'w') as obj_f:
-			obj_f.write(str(file_num) + "," + year)
+			obj_f.write(str(1) + "," + year)
 
 	# 执行完成后，删除文件
 	if(os.path.exists('./the_last_dance.txt')):
