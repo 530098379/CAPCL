@@ -38,14 +38,22 @@ if __name__ == "__main__":
 
 	# 做成Excel文件
 	out_flag = False
-	count=0
+	count=1
 	workbook = xlwt.Workbook()
 	sheet = workbook.add_sheet("Sheet Name1")
+	sheet.write(0, 0, "Union Name")
+	sheet.write(0, 1, "Affiliate")
+	sheet.write(0, 2, "Date")
+	sheet.write(0, 3, "LM_Number")
+	sheet.write(0, 4, "recordkeeping")
+	sheet.write(0, 5, "recordkeeping_violations")
+	sheet.write(0, 6, "number_recordkeeping_v")
+	sheet.write(0, 7, "reporting")
+	sheet.write(0, 8, "reporting_violations")
+	sheet.write(0, 9, "number_recordkeeping_v")
 
 	try:
 		for year in range(last_year - 1,last_year):
-			if out_flag:
-				break
 			# 获取cookie
 			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
@@ -60,8 +68,6 @@ if __name__ == "__main__":
 
 			# 循环打印输出
 			for j in data_union:
-				if out_flag:
-					break
 				pdf_url = "https://www.dol.gov" + (j.contents)[7].select("a")[0]['href']
 
 				r = requests.get(pdf_url)
@@ -100,6 +106,7 @@ if __name__ == "__main__":
 
 				REC_flag = False
 				REP_flag = False
+				reporting_flag = True
 				REC_cnt = 0
 				REP_cnt = 0
 				# 使用文档对象得到页面内容
@@ -128,7 +135,8 @@ if __name__ == "__main__":
 								if re.match("^[0-9].*", out.get_text()):
 									REC_cnt = REC_cnt + 1
 
-							if "fiscal year ended" in out.get_text():
+							if reporting_flag and "for the fiscal year ended" in out.get_text():
+								reporting_flag = False
 								str_strat = out.get_text().rfind(".") + len(".")
 								sheet.write(count, 7, (out.get_text())[str_strat:].strip())
 
@@ -148,12 +156,11 @@ if __name__ == "__main__":
 				sheet.write(count, 6, str(REC_cnt))
 				sheet.write(count, 9, str(REP_cnt))
 				count = count + 1
-				# 延迟2秒，防止访问太快
-				time.sleep(2)
 				fp.close()
-				out_flag = True
 				if(os.path.exists(pdf_file_path)):
 					os.remove(pdf_file_path)
+				# 延迟2秒，防止访问太快
+				time.sleep(2)
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
 
@@ -167,7 +174,7 @@ if __name__ == "__main__":
 	finally:
 		# 中断或者异常，记录最后的工会编码以及年份
 		with open('./the_last_dance.txt', 'w') as obj_f:
-			obj_f.write(str(1) + "," + str(year))
+			obj_f.write(CAPDataArray[1] + "," + CAPDataArray[2] + "," + CAPDataArray[3])
 
 	# 执行完成后，删除文件
 	if(os.path.exists('./the_last_dance.txt')):
