@@ -128,8 +128,15 @@ if __name__ == "__main__":
 								break
 
 							if "Recordkeeping Violations" in out.get_text():
-								sheet.write(count, 5, str(1))
+								sheet.write(count, 5, "1")
 
+							if "fiscal year ended" in out.get_text():
+								sheet.write(count, 6, out.get_text())
+								out_flag = True
+								break
+
+							if "Reporting Violations" in out.get_text():
+								sheet.write(count, 7, "1")
 
 				count = count + 1
 				# 延迟2秒，防止访问太快
