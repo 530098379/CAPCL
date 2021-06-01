@@ -107,7 +107,8 @@ if __name__ == "__main__":
 					layout = device.get_result()
 					for out in layout:
 						if hasattr(out, "get_text"):
-							#print(out.get_text(), flush = True)
+							if out.get_text().strip() == "":
+								continue
 							
 							if "LM Number:" in out.get_text():
 								str_strat = out.get_text().find("LM Number:") + len("LM Number:")
@@ -136,6 +137,10 @@ if __name__ == "__main__":
 							if REP_flag:
 								if re.match("^[0-9].*", out.get_text()):
 									REP_cnt = REP_cnt + 1
+
+							if "OtherIssues" == out.get_text().strip().replace(" ", ""):
+								REC_flag = False
+								REP_flag = False
 
 				sheet.write(count, 6, str(REC_cnt))
 				sheet.write(count, 9, str(REP_cnt))
