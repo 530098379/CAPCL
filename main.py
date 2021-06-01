@@ -73,8 +73,10 @@ if __name__ == "__main__":
 				sheet.write(count,1, CAPDataArray[2])
 				sheet.write(count,2, CAPDataArray[3])
 
-				fp = open('C:\Work\python\CAPCL\natca_localzau_10-30-18_redacted.pdf','rb')
-
+				pdf_url = r"C:\Work\python\CAPCL\natca_localzau_10-30-18_redacted.pdf"
+				pdf_url2 = r"" + pdf_url
+				#fp = open(r'' + pdf_url,'rb')
+				fp = open(pdf_url,'rb')
 				# 创建一个与文档关联的解释器
 				parser = PDFParser(fp)
 				# PDF文档对象
@@ -114,7 +116,8 @@ if __name__ == "__main__":
 								sheet.write(count, 5, "1")
 
 							if "fiscal year ended" in out.get_text():
-								sheet.write(count, 6, out.get_text())
+								str_strat = out.get_text().rfind(".") + len(".")
+								sheet.write(count, 6, (out.get_text())[str_strat:].strip())
 
 							if "Reporting Violations" in out.get_text():
 								sheet.write(count, 7, "1")
@@ -136,7 +139,7 @@ if __name__ == "__main__":
 	finally:
 		# 中断或者异常，记录最后的工会编码以及年份
 		with open('./the_last_dance.txt', 'w') as obj_f:
-			obj_f.write(str(1) + "," + year)
+			obj_f.write(str(1) + "," + str(year))
 
 	# 执行完成后，删除文件
 	if(os.path.exists('./the_last_dance.txt')):
