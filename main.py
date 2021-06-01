@@ -95,6 +95,10 @@ if __name__ == "__main__":
 				# 页面解释器
 				interpreter = PDFPageInterpreter(resource, device)
 
+				REC_flag = False
+				REP_flag = False
+				REC_cnt = 0
+				REP_cnt = 0
 				# 使用文档对象得到页面内容
 				for page in doc.get_pages():
 					# 使用页面解释器读取
@@ -113,15 +117,28 @@ if __name__ == "__main__":
 								sheet.write(count, 4, out.get_text())
 
 							if "Recordkeeping Violations" in out.get_text():
+								REC_flag = True
 								sheet.write(count, 5, "1")
+
+							if REC_flag:
+								if re.match("^[0-9].*", out.get_text()):
+									REC_cnt = REC_cnt + 1
 
 							if "fiscal year ended" in out.get_text():
 								str_strat = out.get_text().rfind(".") + len(".")
-								sheet.write(count, 6, (out.get_text())[str_strat:].strip())
+								sheet.write(count, 7, (out.get_text())[str_strat:].strip())
 
 							if "Reporting Violations" in out.get_text():
-								sheet.write(count, 7, "1")
+								REC_flag = False
+								REP_flag = True
+								sheet.write(count, 8, "1")
 
+							if REP_flag:
+								if re.match("^[0-9].*", out.get_text()):
+									REP_cnt = REP_cnt + 1
+
+				sheet.write(count, 6, str(REC_cnt))
+				sheet.write(count, 9, str(REP_cnt))
 				count = count + 1
 				# 延迟2秒，防止访问太快
 				time.sleep(2)
