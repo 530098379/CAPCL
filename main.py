@@ -85,6 +85,7 @@ if __name__ == "__main__":
 				sheet.write(count,1, CAPDataArray[2])
 				sheet.write(count,2, CAPDataArray[3])
 
+				#pdf_file_path = r"C:\Work\python\CAPCL\RLCA_LU12_08-28-20_Redacted.pdf"
 				fp = open(pdf_file_path,'rb')
 				# 创建一个与文档关联的解释器
 				parser = PDFParser(fp)
@@ -127,6 +128,9 @@ if __name__ == "__main__":
 								sheet.write(count, 3, (out.get_text())[str_strat:].strip())
 							elif "LMNumber:" in out.get_text().strip().replace(" ", ""):
 								str_strat = out.get_text().strip().replace(" ", "").find("LMNumber:") + len("LMNumber:")
+								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
+							elif "LMNlllllber:" in out.get_text().strip().replace(" ", ""):
+								str_strat = out.get_text().strip().replace(" ", "").find("LMNlllllber:") + len("LMNlllllber:")
 								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
 
 							if "the following recordkeeping violations:" in out.get_text():
