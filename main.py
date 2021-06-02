@@ -156,7 +156,8 @@ if __name__ == "__main__":
 								if re.match("^[0-9].*", out.get_text()):
 									REP_cnt = REP_cnt + 1
 
-							if "OtherIssues" == out.get_text().strip().replace(" ", ""):
+							if "OtherIssues" == out.get_text().strip().replace(" ", "") \
+								or "OtherViolation" == out.get_text().strip().replace(" ", ""):
 								REC_flag = False
 								REP_flag = False
 
@@ -167,7 +168,7 @@ if __name__ == "__main__":
 				if(os.path.exists(pdf_file_path)):
 					os.remove(pdf_file_path)
 				# 延迟2秒，防止访问太快
-				time.sleep(2)
+				#time.sleep(2)
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
 
