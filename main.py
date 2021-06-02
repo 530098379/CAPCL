@@ -125,6 +125,9 @@ if __name__ == "__main__":
 							if "LM Number:" in out.get_text():
 								str_strat = out.get_text().find("LM Number:") + len("LM Number:")
 								sheet.write(count, 3, (out.get_text())[str_strat:].strip())
+							elif "LMNumber:" in out.get_text().strip().replace(" ", ""):
+								str_strat = out.get_text().strip().replace(" ", "").find("LMNumber:") + len("LMNumber:")
+								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
 
 							if "the following recordkeeping violations:" in out.get_text():
 								sheet.write(count, 4, out.get_text())
