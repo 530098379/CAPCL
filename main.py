@@ -129,6 +129,9 @@ if __name__ == "__main__":
 							elif "LMNumber:" in out.get_text().strip().replace(" ", ""):
 								str_strat = out.get_text().strip().replace(" ", "").find("LMNumber:") + len("LMNumber:")
 								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
+							elif "LMNmnber:" in out.get_text().strip().replace(" ", ""):
+								str_strat = out.get_text().strip().replace(" ", "").find("LMNmnber:") + len("LMNmnber:")
+								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
 							elif "LMNlllllber:" in out.get_text().strip().replace(" ", ""):
 								str_strat = out.get_text().strip().replace(" ", "").find("LMNlllllber:") + len("LMNlllllber:")
 								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
