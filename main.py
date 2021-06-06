@@ -136,10 +136,14 @@ if __name__ == "__main__":
 								str_strat = out.get_text().strip().replace(" ", "").find("LMNlllllber:") + len("LMNlllllber:")
 								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
 
-							if "the following recordkeeping violations:" in out.get_text():
+							if "the following recordkeeping violations:" in out.get_text() \
+								or "the following recordkeeping violation:" in out.get_text():
 								sheet.write(count, 4, out.get_text())
 
-							if Recordkeeping_V_flag and "Recordkeeping Violations" in out.get_text():
+							if Recordkeeping_V_flag and ("Recordkeeping Violations" in out.get_text() \
+								or "Recordkeeping Violation" in out.get_text()
+								or "RecordkeepingViolation" == out.get_text().strip().replace(" ", "")
+								or "RecordkeepingViolations" == out.get_text().strip().replace(" ", "")):
 								Recordkeeping_V_flag = False
 								REC_flag = True
 								sheet.write(count, 5, "1")
