@@ -120,6 +120,7 @@ if __name__ == "__main__":
 				Reporting_V_flag = True
 				REC_cnt = 0
 				REP_cnt = 0
+				data_index = 0
 				# 使用文档对象得到页面内容
 				for page in doc.get_pages():
 					# 使用页面解释器读取
@@ -128,6 +129,7 @@ if __name__ == "__main__":
 					layout = device.get_result()
 					for out in layout:
 						if hasattr(out, "get_text"):
+							data_index = data_index + 1
 							if out.get_text().strip() == "":
 								continue
 							
@@ -170,6 +172,12 @@ if __name__ == "__main__":
 								REC_flag = False
 								REP_flag = True
 								sheet.write(count, 8, "1")
+
+							if data_index == 2:
+								sheet.write(count, 10, out.get_text())
+							
+							if data_index == 4:
+								sheet.write(count, 11, out.get_text())
 
 							if REP_flag:
 								if re.match("^[0-9].*", out.get_text()):
