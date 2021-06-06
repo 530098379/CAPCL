@@ -17,7 +17,7 @@ from pdfminer.pdfparser import PDFParser, PDFDocument
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 
 if __name__ == "__main__":
-	sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+	#sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 	print("开始", flush = True)
 	add_flag = False #字符串拼接flag
 	question_text = "" #输出字符串
@@ -51,6 +51,8 @@ if __name__ == "__main__":
 	sheet.write(0, 7, "reporting")
 	sheet.write(0, 8, "reporting_violations")
 	sheet.write(0, 9, "number_recordkeeping_v")
+	sheet.write(0, 10, "office zip")
+	sheet.write(0, 11, "union_zip")
 
 	try:
 		for year in range(last_year - 1,last_year):
@@ -68,23 +70,29 @@ if __name__ == "__main__":
 
 			# 循环打印输出
 			for j in data_union:
+				CAPDataArray = j.text.split("\n")
+				CAPDataArray = [x for x in CAPDataArray if x!='']
+
+				print("Union Name:" + str(CAPDataArray[0]), flush = True)
+				print("Affiliate:" + CAPDataArray[1], flush = True)
+				print("Date:" + CAPDataArray[2], flush = True)
+				print("--------------------------")
+				sheet.write(count,0, CAPDataArray[0]) # row, column, value
+				sheet.write(count,1, CAPDataArray[1])
+				sheet.write(count,2, CAPDataArray[2])
+
+				#print(j.contents, flush = True)
 				pdf_url = "https://www.dol.gov" + (j.contents)[7].select("a")[0]['href']
+				#print("pdf_url:" + pdf_url, flush = True)
 
 				r = requests.get(pdf_url)
+				if r.status_code != 200:
+					count = count + 1
+					continue
+				
 				pdf_file_path = os.getcwd() + r"\temp.pdf";
 				with open(pdf_file_path, 'wb') as f:
 					f.write(r.content)
-
-				CAPDataArray = j.text.split("\n")
-
-				print("Union Name:" + str(CAPDataArray[1]), flush = True)
-				print("Affiliate:" + CAPDataArray[2], flush = True)
-				print("Date:" + CAPDataArray[3], flush = True)
-				print("--------------------------")
-				sheet.write(count,0, CAPDataArray[1]) # row, column, value
-				sheet.write(count,1, CAPDataArray[2])
-				sheet.write(count,2, CAPDataArray[3])
-
 				#pdf_file_path = r"C:\Work\python\CAPCL\RLCA_LU12_08-28-20_Redacted.pdf"
 				fp = open(pdf_file_path,'rb')
 				# 创建一个与文档关联的解释器
