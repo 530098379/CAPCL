@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	sheet.write(0, 7, "reporting")
 	sheet.write(0, 8, "reporting_violations")
 	sheet.write(0, 9, "number_recordkeeping_v")
-	sheet.write(0, 10, "office zip")
+	sheet.write(0, 10, "office_zip")
 	sheet.write(0, 11, "union_zip")
 
 	try:
