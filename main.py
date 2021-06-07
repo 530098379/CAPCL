@@ -151,7 +151,8 @@ if __name__ == "__main__":
 								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
 
 							if "the following recordkeeping violations:" in out.get_text() \
-								or "the following recordkeeping violation:" in out.get_text():
+								or "the following recordkeeping violation:" in out.get_text() \
+								or "thefollowingrecordkeepingviolation:" in out.get_text().strip().replace(" ", "").replace("\n", ""):
 								sheet.write(count, 4, out.get_text())
 
 							if Recordkeeping_V_flag and ("Recordkeeping Violations" in out.get_text() \
