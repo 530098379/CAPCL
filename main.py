@@ -30,11 +30,18 @@ def read_pdf(pdf_url, sheet, count):
 	parser = PDFParser(fp)
 	# PDF文档对象
 	doc = PDFDocument()
+
 	# 链接解释器和文档对象
 	parser.set_document(doc)
+
 	doc.set_parser(parser)
 	# 初始化文档
 	doc.initialize("")
+
+	# 检测文档是否提供txt转换，不提供就忽略
+	if not doc.is_extractable:
+		return False
+
 	# 创建PDF资源管理器
 	resource = PDFResourceManager()
 	# 参数分析器
