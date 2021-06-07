@@ -16,6 +16,117 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfparser import PDFParser, PDFDocument
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 
+def read_pdf(pdf_url, sheet, count):
+	r = requests.get(pdf_url)
+	if r.status_code != 200:
+		return False
+	
+	pdf_file_path = os.getcwd() + r"\temp.pdf";
+	with open(pdf_file_path, 'wb') as f:
+		f.write(r.content)
+	#pdf_file_path = r"C:\Work\python\CAPCL\RLCA_LU12_08-28-20_Redacted.pdf"
+	fp = open(pdf_file_path,'rb')
+	# 创建一个与文档关联的解释器
+	parser = PDFParser(fp)
+	# PDF文档对象
+	doc = PDFDocument()
+	# 链接解释器和文档对象
+	parser.set_document(doc)
+	doc.set_parser(parser)
+	# 初始化文档
+	doc.initialize("")
+	# 创建PDF资源管理器
+	resource = PDFResourceManager()
+	# 参数分析器
+	laparam = LAParams()
+	# 创建聚合器
+	device = PDFPageAggregator(resource, laparams=laparam)
+	# 页面解释器
+	interpreter = PDFPageInterpreter(resource, device)
+
+	REC_flag = False
+	REP_flag = False
+	reporting_flag = True
+	Recordkeeping_V_flag = True
+	Reporting_V_flag = True
+	REC_cnt = 0
+	REP_cnt = 0
+	data_index = 0
+	# 使用文档对象得到页面内容
+	for page in doc.get_pages():
+		# 使用页面解释器读取
+		interpreter.process_page(page)
+		# 使用聚合器获得内容
+		layout = device.get_result()
+		for out in layout:
+			if hasattr(out, "get_text"):
+				data_index = data_index + 1
+				if out.get_text().strip() == "":
+					continue
+				
+				if "LM Number:" in out.get_text():
+					str_strat = out.get_text().find("LM Number:") + len("LM Number:")
+					sheet.write(count, 3, (out.get_text())[str_strat:].strip())
+				elif "LMNumber:" in out.get_text().strip().replace(" ", ""):
+					str_strat = out.get_text().strip().replace(" ", "").find("LMNumber:") + len("LMNumber:")
+					sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
+				elif "LMNmnber:" in out.get_text().strip().replace(" ", ""):
+					str_strat = out.get_text().strip().replace(" ", "").find("LMNmnber:") + len("LMNmnber:")
+					sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
+				elif "LMNlllllber:" in out.get_text().strip().replace(" ", ""):
+					str_strat = out.get_text().strip().replace(" ", "").find("LMNlllllber:") + len("LMNlllllber:")
+					sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
+
+				if "the following recordkeeping violations:" in out.get_text() \
+					or "the following recordkeeping violation:" in out.get_text() \
+					or "thefollowingrecordkeepingviolation:" in out.get_text().strip().replace(" ", "").replace("\n", ""):
+					sheet.write(count, 4, out.get_text())
+
+				if Recordkeeping_V_flag and ("Recordkeeping Violations" in out.get_text() \
+					or "Recordkeeping Violation" in out.get_text()
+					or "RecordkeepingViolation" == out.get_text().strip().replace(" ", "")
+					or "RecordkeepingViolations" == out.get_text().strip().replace(" ", "")):
+					Recordkeeping_V_flag = False
+					REC_flag = True
+					sheet.write(count, 5, "1")
+
+				if REC_flag:
+					if re.match("^[0-9].*", out.get_text()):
+						REC_cnt = REC_cnt + 1
+
+				if reporting_flag and "for the fiscal year ended" in out.get_text():
+					reporting_flag = False
+					str_strat = out.get_text().rfind(".") + len(".")
+					sheet.write(count, 7, (out.get_text())[str_strat:].strip())
+
+				if Reporting_V_flag and "Reporting Violations" in out.get_text():
+					Reporting_V_flag = False
+					REC_flag = False
+					REP_flag = True
+					sheet.write(count, 8, "1")
+
+				if data_index == 2:
+					sheet.write(count, 10, out.get_text())
+				
+				if data_index == 4:
+					sheet.write(count, 11, out.get_text())
+
+				if REP_flag:
+					if re.match("^[0-9].*", out.get_text()):
+						REP_cnt = REP_cnt + 1
+
+				if "OtherIssues" == out.get_text().strip().replace(" ", "") \
+					or "OtherViolation" == out.get_text().strip().replace(" ", ""):
+					REC_flag = False
+					REP_flag = False
+
+	sheet.write(count, 6, str(REC_cnt))
+	sheet.write(count, 9, str(REP_cnt))
+	fp.close()
+	if(os.path.exists(pdf_file_path)):
+		os.remove(pdf_file_path)
+	return True
+
 if __name__ == "__main__":
 	#sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 	print("开始", flush = True)
@@ -88,119 +199,8 @@ if __name__ == "__main__":
 				else:
 					pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
 				#print("pdf_url:" + pdf_url, flush = True)
-
-				r = requests.get(pdf_url)
-				if r.status_code != 200:
-					count = count + 1
-					continue
-				
-				pdf_file_path = os.getcwd() + r"\temp.pdf";
-				with open(pdf_file_path, 'wb') as f:
-					f.write(r.content)
-				#pdf_file_path = r"C:\Work\python\CAPCL\RLCA_LU12_08-28-20_Redacted.pdf"
-				fp = open(pdf_file_path,'rb')
-				# 创建一个与文档关联的解释器
-				parser = PDFParser(fp)
-				# PDF文档对象
-				doc = PDFDocument()
-				# 链接解释器和文档对象
-				parser.set_document(doc)
-				doc.set_parser(parser)
-				# 初始化文档
-				doc.initialize("")
-				# 创建PDF资源管理器
-				resource = PDFResourceManager()
-				# 参数分析器
-				laparam = LAParams()
-				# 创建聚合器
-				device = PDFPageAggregator(resource, laparams=laparam)
-				# 页面解释器
-				interpreter = PDFPageInterpreter(resource, device)
-
-				REC_flag = False
-				REP_flag = False
-				reporting_flag = True
-				Recordkeeping_V_flag = True
-				Reporting_V_flag = True
-				REC_cnt = 0
-				REP_cnt = 0
-				data_index = 0
-				# 使用文档对象得到页面内容
-				for page in doc.get_pages():
-					# 使用页面解释器读取
-					interpreter.process_page(page)
-					# 使用聚合器获得内容
-					layout = device.get_result()
-					for out in layout:
-						if hasattr(out, "get_text"):
-							data_index = data_index + 1
-							if out.get_text().strip() == "":
-								continue
-							
-							if "LM Number:" in out.get_text():
-								str_strat = out.get_text().find("LM Number:") + len("LM Number:")
-								sheet.write(count, 3, (out.get_text())[str_strat:].strip())
-							elif "LMNumber:" in out.get_text().strip().replace(" ", ""):
-								str_strat = out.get_text().strip().replace(" ", "").find("LMNumber:") + len("LMNumber:")
-								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
-							elif "LMNmnber:" in out.get_text().strip().replace(" ", ""):
-								str_strat = out.get_text().strip().replace(" ", "").find("LMNmnber:") + len("LMNmnber:")
-								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
-							elif "LMNlllllber:" in out.get_text().strip().replace(" ", ""):
-								str_strat = out.get_text().strip().replace(" ", "").find("LMNlllllber:") + len("LMNlllllber:")
-								sheet.write(count, 3, (out.get_text().strip().replace(" ", ""))[str_strat:].strip())
-
-							if "the following recordkeeping violations:" in out.get_text() \
-								or "the following recordkeeping violation:" in out.get_text() \
-								or "thefollowingrecordkeepingviolation:" in out.get_text().strip().replace(" ", "").replace("\n", ""):
-								sheet.write(count, 4, out.get_text())
-
-							if Recordkeeping_V_flag and ("Recordkeeping Violations" in out.get_text() \
-								or "Recordkeeping Violation" in out.get_text()
-								or "RecordkeepingViolation" == out.get_text().strip().replace(" ", "")
-								or "RecordkeepingViolations" == out.get_text().strip().replace(" ", "")):
-								Recordkeeping_V_flag = False
-								REC_flag = True
-								sheet.write(count, 5, "1")
-
-							if REC_flag:
-								if re.match("^[0-9].*", out.get_text()):
-									REC_cnt = REC_cnt + 1
-
-							if reporting_flag and "for the fiscal year ended" in out.get_text():
-								reporting_flag = False
-								str_strat = out.get_text().rfind(".") + len(".")
-								sheet.write(count, 7, (out.get_text())[str_strat:].strip())
-
-							if Reporting_V_flag and "Reporting Violations" in out.get_text():
-								Reporting_V_flag = False
-								REC_flag = False
-								REP_flag = True
-								sheet.write(count, 8, "1")
-
-							if data_index == 2:
-								sheet.write(count, 10, out.get_text())
-							
-							if data_index == 4:
-								sheet.write(count, 11, out.get_text())
-
-							if REP_flag:
-								if re.match("^[0-9].*", out.get_text()):
-									REP_cnt = REP_cnt + 1
-
-							if "OtherIssues" == out.get_text().strip().replace(" ", "") \
-								or "OtherViolation" == out.get_text().strip().replace(" ", ""):
-								REC_flag = False
-								REP_flag = False
-
-				sheet.write(count, 6, str(REC_cnt))
-				sheet.write(count, 9, str(REP_cnt))
+				ret = read_pdf(pdf_url, sheet, count)
 				count = count + 1
-				fp.close()
-				if(os.path.exists(pdf_file_path)):
-					os.remove(pdf_file_path)
-				# 延迟2秒，防止访问太快
-				#time.sleep(2)
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
 
