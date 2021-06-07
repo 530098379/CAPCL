@@ -183,6 +183,7 @@ if __name__ == "__main__":
 			for j in data_union:
 				CAPDataArray = j.text.split("\n")
 				CAPDataArray = [x for x in CAPDataArray if x!='']
+				CAPDataArray = [x for x in CAPDataArray if x!='\xa0']
 
 				print("Union Name:" + str(CAPDataArray[0]), flush = True)
 				print("Affiliate:" + CAPDataArray[1], flush = True)
@@ -192,7 +193,7 @@ if __name__ == "__main__":
 				sheet.write(count,1, CAPDataArray[1])
 				sheet.write(count,2, CAPDataArray[2])
 
-				#print(j.contents, flush = True)
+				#print(CAPDataArray, flush = True)
 				pdf_url = "https://www.dol.gov"
 				if len(CAPDataArray) == 4:
 					pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
