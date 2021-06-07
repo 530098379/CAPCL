@@ -82,7 +82,11 @@ if __name__ == "__main__":
 				sheet.write(count,2, CAPDataArray[2])
 
 				#print(j.contents, flush = True)
-				pdf_url = "https://www.dol.gov" + (j.contents)[7].select("a")[0]['href']
+				pdf_url = "https://www.dol.gov"
+				if len(CAPDataArray) == 4:
+					pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
+				else:
+					pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
 				#print("pdf_url:" + pdf_url, flush = True)
 
 				r = requests.get(pdf_url)
