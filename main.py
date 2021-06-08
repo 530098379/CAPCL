@@ -226,6 +226,7 @@ if __name__ == "__main__":
 
 				print(CAPDataArray, flush = True)
 				pdf_url = "https://www.dol.gov"
+				html_url = "https://www.dol.gov"
 				if len(CAPDataArray) == 4:
 					if year == 2016 and CAPDataArray[0] == "United Nurses and Allied Professionals":
 						pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
@@ -234,10 +235,14 @@ if __name__ == "__main__":
 				else:
 					if "HTML" in CAPDataArray or CAPDataArray[3] == "-":
 						pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
+						if "HTML" in CAPDataArray:
+							html_url = html_url + (j.contents)[7].select("a")[0]['href']
 					else:
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
 				#print("pdf_url:" + pdf_url, flush = True)
 				ret = read_pdf(pdf_url, sheet, count)
+				if year <= 2016 and not ret and len(html_url) > len("https://www.dol.gov"):
+					read_html(pdf_url, sheet, count)
 				count = count + 1
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
