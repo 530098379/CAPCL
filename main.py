@@ -16,6 +16,26 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfparser import PDFParser, PDFDocument
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 
+def read_html(html_url,sheet, count):
+	try:
+		r = requests.get(html_url)
+		if r.status_code != 200:
+			return False
+		# 再次封装，获取具体标签内的内容
+		result_detail = r.text
+		bs_detail = BeautifulSoup(result_detail,"html.parser")
+
+		# 获取已爬取内容中的Fiscal Year行的链接
+		data_detail = bs_detail.select("div[id='content'] p")
+
+		# 循环打印输出
+		data_detail_count = 0
+		#for k in data_detail:
+	except:
+		print("html 解析失败", flush = True)
+		return False
+	return True
+
 def read_pdf(pdf_url, sheet, count):
 	try:
 		r = requests.get(pdf_url)
@@ -177,7 +197,7 @@ if __name__ == "__main__":
 	sheet.write(0, 11, "union_zip")
 
 	try:
-		for year in range(2016,last_year):
+		for year in range(2015,2016):
 			# 获取cookie
 			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
