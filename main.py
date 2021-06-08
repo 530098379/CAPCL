@@ -207,7 +207,10 @@ if __name__ == "__main__":
 				print(CAPDataArray, flush = True)
 				pdf_url = "https://www.dol.gov"
 				if len(CAPDataArray) == 4:
-					pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
+					if year == 2016 and CAPDataArray[0] == "United Nurses and Allied Professionals":
+						pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
+					else:	
+						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
 				else:
 					if "HTML" in CAPDataArray or CAPDataArray[3] == "-":
 						pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
