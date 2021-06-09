@@ -29,20 +29,19 @@ def read_html(html_url,sheet, count):
 		data_detail = bs_detail.select("div[id='content'] p")
 
 		# 循环打印输出
-		data_detail_count = 0
+		REC_flag = False
+		REP_flag = False
+		reporting_flag = True
+		Recordkeeping_V_flag = True
+		Reporting_V_flag = True
+		REC_cnt = 0
+		REP_cnt = 0
+		data_index = 0
 		for k in data_detail:
 			if k.text.strip() == "":
 				continue
 			htmlDataArray = k.text.split("\n")
 			htmlDataArray = [x for x in htmlDataArray if x!='']
-			REC_flag = False
-			REP_flag = False
-			reporting_flag = True
-			Recordkeeping_V_flag = True
-			Reporting_V_flag = True
-			REC_cnt = 0
-			REP_cnt = 0
-			data_index = 0
 			for item in htmlDataArray:
 				data_index = data_index + 1
 				text_data = item.strip()
@@ -215,13 +214,57 @@ def read_pdf(pdf_url, sheet, count):
 		return False
 	return True
 
+def is_valid_date(str):
+	#判断是否是一个有效的日期字符串
+	try:
+		time.strptime(str, r"%Y%m%d")
+		return True
+	except:
+		return False
+
 if __name__ == "__main__":
 	#sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+	
+	from_year = 2015
+	to_year = datetime.datetime.now().year # 最后一次的年份，默认值为本年
+
+	if len(sys.argv) > 3:
+		print("参数小于等于2", flush = True)
+		exit
+	elif len(sys.argv) == 2:
+		if is_valid_date(str(sys.argv[1])):
+			print("第一个参数不是年份", flush = True)
+			exit
+		else:
+			from_year = int(sys.argv[1])
+			to_year = int(sys.argv[1]) + 1
+	elif len(sys.argv) == 3:
+		if is_valid_date(str(sys.argv[1])):
+			print("第一个参数不是年份", flush = True)
+			exit
+		elif is_valid_date(str(sys.argv[2])):
+			print("第二个参数不是年份", flush = True)
+			exit
+		elif int(str(sys.argv[1])) > datetime.datetime.now().year:
+			print("第一个参数的年份大于本年", flush = True)
+			exit
+		elif int(str(sys.argv[2])) > datetime.datetime.now().year:
+			print("第二个参数的年份大于本年", flush = True)
+			exit
+		elif int(str(sys.argv[1])) > int(str(sys.argv[2])):
+			print("第一个参数的年份大于第二个参数的年份", flush = True)
+			exit
+		else:
+			from_year = int(sys.argv[1])
+			to_year = int(sys.argv[2]) + 1
+
 	print("开始", flush = True)
+
 	add_flag = False #字符串拼接flag
 	question_text = "" #输出字符串
 	last_num = 0 #最后一次的工会编号
 	last_year = datetime.datetime.now().year # 最后一次的年份，默认值为本年
+
 	file_year = ""
 	# 文件名
 	excel_file_name = os.getcwd() + "\\result_" + \
@@ -254,7 +297,7 @@ if __name__ == "__main__":
 	sheet.write(0, 11, "union_zip")
 
 	try:
-		for year in range(2015,2016):
+		for year in range(from_year,to_year):
 			# 获取cookie
 			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
