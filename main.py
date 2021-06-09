@@ -30,7 +30,12 @@ def read_html(html_url,sheet, count):
 
 		# 循环打印输出
 		data_detail_count = 0
-		#for k in data_detail:
+		for k in data_detail:
+			if k.text.strip() == "":
+				continue
+			htmlDataArray = k.text.split("\n")
+			htmlDataArray = [x for x in htmlDataArray if x!='']
+			print(k.text, flush = True)
 	except:
 		print("html 解析失败", flush = True)
 		return False
@@ -242,7 +247,7 @@ if __name__ == "__main__":
 				#print("pdf_url:" + pdf_url, flush = True)
 				ret = read_pdf(pdf_url, sheet, count)
 				if year <= 2016 and not ret and len(html_url) > len("https://www.dol.gov"):
-					read_html(pdf_url, sheet, count)
+					read_html(html_url, sheet, count)
 				count = count + 1
 			# 输出结果到Excel
 			workbook.save(excel_file_name)
