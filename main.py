@@ -35,7 +35,59 @@ def read_html(html_url,sheet, count):
 				continue
 			htmlDataArray = k.text.split("\n")
 			htmlDataArray = [x for x in htmlDataArray if x!='']
-			print(k.text, flush = True)
+			REC_flag = False
+			REP_flag = False
+			reporting_flag = True
+			Recordkeeping_V_flag = True
+			Reporting_V_flag = True
+			REC_cnt = 0
+			REP_cnt = 0
+			data_index = 0
+			for item in htmlDataArray:
+				data_index = data_index + 1
+				text_data = item.strip()
+				if "LM Number:" in text_data:
+					str_strat = text_data.find("LM Number:") + len("LM Number:")
+					sheet.write(count, 3, (text_data)[str_strat:].strip())
+
+				if "the following recordkeeping violations:" in text_data:
+					sheet.write(count, 4, text_data)
+
+				if Recordkeeping_V_flag and ("Recordkeeping Violations" in text_data \
+					or "Recordkeeping Violation" in text_data):
+					Recordkeeping_V_flag = False
+					REC_flag = True
+					sheet.write(count, 5, "1")
+
+				if REC_flag:
+					if re.match("^[0-9].*", text_data):
+						REC_cnt = REC_cnt + 1
+
+				if reporting_flag and "for the fiscal year ended" in text_data:
+					reporting_flag = False
+					str_strat = text_data.rfind(".") + len(".")
+					sheet.write(count, 7, (text_data)[str_strat:].strip())
+
+				if Reporting_V_flag and "Reporting Violations" in text_data:
+					Reporting_V_flag = False
+					REC_flag = False
+					REP_flag = True
+					sheet.write(count, 8, "1")
+
+				if data_index == 2:
+					sheet.write(count, 10, text_data)
+				
+				if data_index == 4:
+					sheet.write(count, 11, text_data)
+
+				if REP_flag:
+					if re.match("^[0-9].*", text_data):
+						REP_cnt = REP_cnt + 1
+
+				if "OtherIssues" == text_data.strip().replace(" ", "") \
+					or "OtherViolation" == text_data.strip().replace(" ", ""):
+					REC_flag = False
+					REP_flag = False
 	except:
 		print("html 解析失败", flush = True)
 		return False
