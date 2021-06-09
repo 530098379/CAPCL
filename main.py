@@ -217,43 +217,43 @@ def read_pdf(pdf_url, sheet, count):
 def is_valid_date(str):
 	#判断是否是一个有效的日期字符串
 	try:
-		time.strptime(str, r"%Y%m%d")
+		time.strptime(str, r"%Y")
 		return True
 	except:
 		return False
 
 if __name__ == "__main__":
 	#sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
-	
+
 	from_year = 2015
 	to_year = datetime.datetime.now().year # 最后一次的年份，默认值为本年
 
 	if len(sys.argv) > 3:
-		print("参数小于等于2", flush = True)
-		exit
+		print("参数大于2个", flush = True)
+		sys.exit()
 	elif len(sys.argv) == 2:
-		if is_valid_date(str(sys.argv[1])):
+		if not is_valid_date(sys.argv[1]):
 			print("第一个参数不是年份", flush = True)
-			exit
+			sys.exit()
 		else:
 			from_year = int(sys.argv[1])
 			to_year = int(sys.argv[1]) + 1
 	elif len(sys.argv) == 3:
-		if is_valid_date(str(sys.argv[1])):
+		if not is_valid_date(sys.argv[1]):
 			print("第一个参数不是年份", flush = True)
-			exit
-		elif is_valid_date(str(sys.argv[2])):
+			sys.exit()
+		elif not is_valid_date(sys.argv[2]):
 			print("第二个参数不是年份", flush = True)
-			exit
-		elif int(str(sys.argv[1])) > datetime.datetime.now().year:
+			sys.exit()
+		elif int(sys.argv[1]) > datetime.datetime.now().year:
 			print("第一个参数的年份大于本年", flush = True)
-			exit
-		elif int(str(sys.argv[2])) > datetime.datetime.now().year:
+			sys.exit()
+		elif int(sys.argv[2]) > datetime.datetime.now().year:
 			print("第二个参数的年份大于本年", flush = True)
-			exit
-		elif int(str(sys.argv[1])) > int(str(sys.argv[2])):
+			sys.exit()
+		elif int(sys.argv[1]) > int(sys.argv[2]):
 			print("第一个参数的年份大于第二个参数的年份", flush = True)
-			exit
+			sys.exit()
 		else:
 			from_year = int(sys.argv[1])
 			to_year = int(sys.argv[2]) + 1
