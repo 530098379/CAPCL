@@ -65,7 +65,8 @@ def read_html(html_url,sheet, count):
 					if re.match("^[0-9].*", text_data):
 						REC_cnt = REC_cnt + 1
 
-				if reporting_flag and "for the fiscal year ended" in text_data:
+				if reporting_flag and ("for the fiscal year ended" in text_data \
+					or "for fiscal year ending" in text_data):
 					reporting_flag = False
 					str_strat = text_data.rfind(".") + len(".")
 					sheet.write(count, 7, (text_data)[str_strat:].strip())
