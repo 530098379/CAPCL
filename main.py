@@ -76,10 +76,10 @@ def read_html(html_url,sheet, count):
 					REP_flag = True
 					sheet.write(count, 8, "1")
 
-				if data_index == 2:
+				if data_index == 6:
 					sheet.write(count, 10, text_data)
 				
-				if data_index == 4:
+				if data_index == 13:
 					sheet.write(count, 11, text_data)
 
 				if REP_flag:
