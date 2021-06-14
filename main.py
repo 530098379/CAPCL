@@ -48,6 +48,9 @@ def read_html(html_url,sheet, count):
 				if "LM Number:" in text_data:
 					str_strat = text_data.find("LM Number:") + len("LM Number:")
 					sheet.write(count, 3, (text_data)[str_strat:].strip())
+				elif "LM File Number" in text_data:
+					str_strat = text_data.find("LM File Number") + len("LM File Number")
+					sheet.write(count, 3, (text_data)[str_strat:].strip())
 
 				if "the following recordkeeping violations:" in text_data:
 					sheet.write(count, 4, text_data)
@@ -270,14 +273,6 @@ if __name__ == "__main__":
 	excel_file_name = os.getcwd() + "\\result_" + \
 		datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".xls"
 
-	# 获取最后一次的工会编号以及年份
-	#my_file = Path("./the_last_dance.txt")
-	#if my_file.is_file():
-		#with open('./the_last_dance.txt', 'r') as f:
-			#last_data = (f.readline()).split(",")
-			#last_num = int(last_data[0])
-			#last_year = int(last_data[1])
-
 	# 做成Excel文件
 	out_flag = False
 	count=1
@@ -297,7 +292,7 @@ if __name__ == "__main__":
 	sheet.write(0, 11, "union_zip")
 
 	try:
-		for year in range(from_year,to_year):
+		for year in range(2009,2010):
 			# 获取cookie
 			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
