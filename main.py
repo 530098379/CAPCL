@@ -90,6 +90,8 @@ def read_html(html_url,sheet, count):
 					or "OtherViolation" == text_data.strip().replace(" ", ""):
 					REC_flag = False
 					REP_flag = False
+		sheet.write(count, 6, str(REC_cnt))
+		sheet.write(count, 9, str(REP_cnt))
 	except:
 		print("html 解析失败", flush = True)
 		return False
