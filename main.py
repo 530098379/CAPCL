@@ -36,6 +36,8 @@ def read_html(html_url,sheet, count):
 		Reporting_V_flag = True
 		REC_cnt = 0
 		REP_cnt = 0
+		Recordkeeping_count = 0
+		Reporting_count = 0
 		data_index = 0
 		for k in data_detail:
 			if k.text.strip() == "":
@@ -59,7 +61,7 @@ def read_html(html_url,sheet, count):
 					or "Recordkeeping Violation" in text_data):
 					Recordkeeping_V_flag = False
 					REC_flag = True
-					sheet.write(count, 5, "1")
+					Recordkeeping_count = Recordkeeping_count + 1
 
 				if REC_flag:
 					if re.match("^[0-9].*", text_data):
@@ -75,7 +77,7 @@ def read_html(html_url,sheet, count):
 					Reporting_V_flag = False
 					REC_flag = False
 					REP_flag = True
-					sheet.write(count, 8, "1")
+					Reporting_count = Reporting_count + 1
 
 				if data_index == 6:
 					sheet.write(count, 10, text_data)
@@ -91,7 +93,9 @@ def read_html(html_url,sheet, count):
 					or "OtherViolation" == text_data.strip().replace(" ", ""):
 					REC_flag = False
 					REP_flag = False
+		sheet.write(count, 5, str(Recordkeeping_count))
 		sheet.write(count, 6, str(REC_cnt))
+		sheet.write(count, 8, str(Reporting_count))
 		sheet.write(count, 9, str(REP_cnt))
 	except:
 		print("html 解析失败", flush = True)
@@ -141,6 +145,8 @@ def read_pdf(pdf_url, sheet, count):
 		Reporting_V_flag = True
 		REC_cnt = 0
 		REP_cnt = 0
+		Recordkeeping_count = 0
+		Reporting_count = 0
 		data_index = 0
 		# 使用文档对象得到页面内容
 		for page in doc.get_pages():
@@ -178,7 +184,7 @@ def read_pdf(pdf_url, sheet, count):
 						or "RecordkeepingViolations" == out.get_text().strip().replace(" ", "")):
 						Recordkeeping_V_flag = False
 						REC_flag = True
-						sheet.write(count, 5, "1")
+						Recordkeeping_count = Recordkeeping_count + 1
 
 					if REC_flag:
 						if re.match("^[0-9].*", out.get_text()):
@@ -193,7 +199,7 @@ def read_pdf(pdf_url, sheet, count):
 						Reporting_V_flag = False
 						REC_flag = False
 						REP_flag = True
-						sheet.write(count, 8, "1")
+						Reporting_count = Reporting_count + 1
 
 					if data_index == 2:
 						sheet.write(count, 10, out.get_text())
@@ -209,8 +215,9 @@ def read_pdf(pdf_url, sheet, count):
 						or "OtherViolation" == out.get_text().strip().replace(" ", ""):
 						REC_flag = False
 						REP_flag = False
-
+		sheet.write(count, 5, str(Recordkeeping_count))
 		sheet.write(count, 6, str(REC_cnt))
+		sheet.write(count, 8, str(Reporting_count))
 		sheet.write(count, 9, str(REP_cnt))
 		fp.close()
 		if(os.path.exists(pdf_file_path)):
@@ -295,7 +302,7 @@ if __name__ == "__main__":
 	sheet.write(0, 11, "union_zip")
 
 	try:
-		for year in range(2009,2010):
+		for year in range(2010,2011):
 			# 获取cookie
 			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
