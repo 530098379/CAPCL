@@ -248,6 +248,9 @@ if __name__ == "__main__":
 		if not is_valid_date(sys.argv[1]):
 			print("第一个参数不是年份", flush = True)
 			sys.exit()
+		elif int(sys.argv[1]) < 2009:
+			print("第一个参数年份小于2009", flush = True)
+			sys.exit()
 		else:
 			from_year = int(sys.argv[1])
 			to_year = int(sys.argv[1]) + 1
@@ -266,6 +269,12 @@ if __name__ == "__main__":
 			sys.exit()
 		elif int(sys.argv[1]) > int(sys.argv[2]):
 			print("第一个参数的年份大于第二个参数的年份", flush = True)
+			sys.exit()
+		elif int(sys.argv[1]) < 2009:
+			print("第一个参数年份小于2009", flush = True)
+			sys.exit()
+		elif int(sys.argv[2]) < 2009:
+			print("第二个参数年份小于2009", flush = True)
 			sys.exit()
 		else:
 			from_year = int(sys.argv[1])
