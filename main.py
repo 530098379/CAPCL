@@ -238,7 +238,7 @@ def is_valid_date(str):
 if __name__ == "__main__":
 	#sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
-	from_year = 2015
+	from_year = 2009
 	to_year = datetime.datetime.now().year # 最后一次的年份，默认值为本年
 
 	if len(sys.argv) > 3:
