@@ -302,7 +302,7 @@ if __name__ == "__main__":
 	sheet.write(0, 11, "union_zip")
 
 	try:
-		for year in range(2010,2011):
+		for year in range(from_year,to_year):
 			# 获取cookie
 			url_cok = "https://www.dol.gov/agencies/olms/audits/" + str(year)
 			r_cok = requests.get(url_cok)
