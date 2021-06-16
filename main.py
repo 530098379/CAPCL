@@ -25,20 +25,20 @@ def read_html(html_url,sheet, count):
 		result_detail = r.text
 		bs_detail = BeautifulSoup(result_detail,"html.parser")
 
-		# 获取已爬取内容中的Fiscal Year行的链接
+		# 获取HTML爬取内容
 		data_detail = bs_detail.select("div[id='content'] p")
 
 		# 循环打印输出
-		REC_flag = False
-		REP_flag = False
-		reporting_flag = True
-		Recordkeeping_V_flag = True
-		Reporting_V_flag = True
-		REC_cnt = 0
-		REP_cnt = 0
-		Recordkeeping_count = 0
-		Reporting_count = 0
-		data_index = 0
+		REC_flag = False # 开始统计recordkeeping_violation的内容
+		REP_flag = False # 开始统计Reporting_Violations的内容
+		reporting_flag = True # 找到recordkeeping_violation
+		Recordkeeping_V_flag = True # 统计reporting_violations数量
+		Reporting_V_flag = True # 统计reporting数量
+		REC_cnt = 0 # recordkeeping_violation的内容数量
+		REP_cnt = 0 # Reporting_Violations的内容数量
+		Recordkeeping_count = 0 # recordkeeping_violations数量
+		Reporting_count = 0 # reporting_violations数量
+		data_index = 0 # 数据索引
 		for k in data_detail:
 			if k.text.strip() == "":
 				continue
@@ -138,16 +138,16 @@ def read_pdf(pdf_url, sheet, count):
 		# 页面解释器
 		interpreter = PDFPageInterpreter(resource, device)
 
-		REC_flag = False
-		REP_flag = False
-		reporting_flag = True
-		Recordkeeping_V_flag = True
-		Reporting_V_flag = True
-		REC_cnt = 0
-		REP_cnt = 0
-		Recordkeeping_count = 0
-		Reporting_count = 0
-		data_index = 0
+		REC_flag = False # 开始统计recordkeeping_violation的内容
+		REP_flag = False # 开始统计Reporting_Violations的内容
+		reporting_flag = True # 找到recordkeeping_violation
+		Recordkeeping_V_flag = True # 统计reporting_violations数量
+		Reporting_V_flag = True # 统计reporting数量
+		REC_cnt = 0 # recordkeeping_violation的内容数量
+		REP_cnt = 0 # Reporting_Violations的内容数量
+		Recordkeeping_count = 0 # recordkeeping_violations数量
+		Reporting_count = 0 # reporting_violations数量
+		data_index = 0 # 数据索引
 		# 使用文档对象得到页面内容
 		for page in doc.get_pages():
 			# 使用页面解释器读取
