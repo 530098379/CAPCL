@@ -282,18 +282,11 @@ if __name__ == "__main__":
 
 	print("开始", flush = True)
 
-	add_flag = False #字符串拼接flag
-	question_text = "" #输出字符串
-	last_num = 0 #最后一次的工会编号
-	last_year = datetime.datetime.now().year # 最后一次的年份，默认值为本年
-
-	file_year = ""
 	# 文件名
 	excel_file_name = os.getcwd() + "\\result_" + \
 		datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".xls"
 
 	# 做成Excel文件
-	out_flag = False
 	count=1
 	workbook = xlwt.Workbook()
 	sheet = workbook.add_sheet("Sheet Name1")
