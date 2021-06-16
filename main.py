@@ -181,7 +181,9 @@ def read_pdf(pdf_url, sheet, count):
 					if Recordkeeping_V_flag and ("Recordkeeping Violations" in out.get_text() \
 						or "Recordkeeping Violation" in out.get_text()
 						or "RecordkeepingViolation" == out.get_text().strip().replace(" ", "")
-						or "RecordkeepingViolations" == out.get_text().strip().replace(" ", "")):
+						or "RecordKeepingViolation" == out.get_text().strip().replace(" ", "")
+						or "RecordkeepingViolations" == out.get_text().strip().replace(" ", "")
+						or "RecordKeepingViolations" == out.get_text().strip().replace(" ", "")):
 						Recordkeeping_V_flag = False
 						REC_flag = True
 						Recordkeeping_count = Recordkeeping_count + 1
