@@ -314,7 +314,7 @@ if __name__ == "__main__":
 			result_union = r_cok.text
 			bs_union = BeautifulSoup(result_union,"html.parser")
 
-			# 获取已爬取内容中的Fiscal Year行的链接
+			# 获取文件的列表
 			data_union = bs_union.select("tbody tr")
 
 			# 循环打印输出
@@ -334,21 +334,30 @@ if __name__ == "__main__":
 				print(CAPDataArray, flush = True)
 				pdf_url = "https://www.dol.gov"
 				html_url = "https://www.dol.gov"
+				# 当数据的列为4行
 				if len(CAPDataArray) == 4:
+					# 2016年的数据Union Name有换行符，从数组9获取pdf的链接
 					if year == 2016 and CAPDataArray[0] == "United Nurses and Allied Professionals":
 						pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
+					# 其他的时候，从数组7获取pdf的链接
 					else:	
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
+				# 当数据的列为5行
 				else:
+					# 当字段包含HTML，或者HTML列是-的时候，从数组9获取获取pdf链接
 					if "HTML" in CAPDataArray or CAPDataArray[3] == "-":
 						pdf_url = pdf_url + (j.contents)[9].select("a")[0]['href']
+						# 当字段包含HTML，从数组7获取获取html链接
 						if "HTML" in CAPDataArray:
 							html_url = html_url + (j.contents)[7].select("a")[0]['href']
+					# 其他的时候，从数组7获取pdf的链接
 					else:
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
 				print("pdf_url:" + pdf_url, flush = True)
 				print("html_url:" + html_url, flush = True)
+				# 解析pdf文件
 				ret = read_pdf(pdf_url, sheet, count)
+				# 年小于2017年，pdf解析失败的时候，调用html解析
 				if year <= 2016 and not ret and len(html_url) > len("https://www.dol.gov"):
 					read_html(html_url, sheet, count)
 				count = count + 1
