@@ -346,7 +346,8 @@ if __name__ == "__main__":
 							html_url = html_url + (j.contents)[7].select("a")[0]['href']
 					else:
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
-				#print("pdf_url:" + pdf_url, flush = True)
+				print("pdf_url:" + pdf_url, flush = True)
+				print("html_url:" + html_url, flush = True)
 				ret = read_pdf(pdf_url, sheet, count)
 				if year <= 2016 and not ret and len(html_url) > len("https://www.dol.gov"):
 					read_html(html_url, sheet, count)
@@ -362,12 +363,8 @@ if __name__ == "__main__":
 			del data_union
 
 	finally:
-		# 中断或者异常，记录最后的工会编码以及年份
+		# 中断或者异常，记录最后的Union Name,Affiliate以及Date
 		with open('./the_last_dance.txt', 'w') as obj_f:
 			obj_f.write(CAPDataArray[1] + "," + CAPDataArray[2] + "," + CAPDataArray[3])
-
-	# 执行完成后，删除文件
-	if(os.path.exists('./the_last_dance.txt')):
-		os.remove('./the_last_dance.txt')
 
 	print("完成",flush = True)
