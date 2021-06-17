@@ -177,7 +177,9 @@ def read_pdf(pdf_url, sheet, count):
 						or "the following recordkeeping violation:" in out.get_text() \
 						or "thefollowingrecordkeepingviolation:" in out.get_text().strip().replace(" ", "").replace("\n", "") \
 						or "thefollowingrecordkeepingviolations:" in out.get_text().strip().replace(" ", "").replace("\n", "") \
-						or "thefollowingrecordkeepingviolationsunder" in out.get_text().strip().replace(" ", "").replace("\n", ""):
+						or "thefollowingrecordkeepingviolationsunder" in out.get_text().strip().replace(" ", "").replace("\n", "") \
+						or "recordsrevealedthefollowingrecordkeeping" in out.get_text().strip().replace(" ", "").replace("\n", "") \
+						or "thefollowingrecordkeepingviolations." in out.get_text().strip().replace(" ", "").replace("\n", ""):
 						sheet.write(count, 4, out.get_text())
 
 					if Recordkeeping_V_flag and ("Recordkeeping Violations" in out.get_text() \
