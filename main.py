@@ -230,6 +230,7 @@ def read_pdf(pdf_url, sheet, count):
 		if(os.path.exists(pdf_file_path)):
 			os.remove(pdf_file_path)
 	except Exception:
+		print("pdf 解析失败", flush = True)
 		print(Exception, flush = True)
 		return False
 	return True
@@ -338,7 +339,7 @@ if __name__ == "__main__":
 				sheet.write(count,1, CAPDataArray[1])
 				sheet.write(count,2, CAPDataArray[2])
 
-				print(CAPDataArray, flush = True)
+				#print(CAPDataArray, flush = True)
 				pdf_url = "https://www.dol.gov"
 				html_url = "https://www.dol.gov"
 				# 当数据的列为4行
@@ -379,6 +380,8 @@ if __name__ == "__main__":
 			del data_union
 
 	finally:
+		# 中断或者异常，输出结果到Excel
+		workbook.save(excel_file_name)
 		# 中断或者异常，记录最后的Union Name,Affiliate以及Date
 		with open('./the_last_dance.txt', 'w') as obj_f:
 			obj_f.write(CAPDataArray[1] + "," + CAPDataArray[2] + "," + CAPDataArray[3])
