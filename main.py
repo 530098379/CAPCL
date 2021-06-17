@@ -232,7 +232,7 @@ def read_pdf(pdf_url, sheet, count):
 			os.remove(pdf_file_path)
 	except Exception:
 		print("pdf 解析失败", flush = True)
-		print(Exception, flush = True)
+		#print(Exception, flush = True)
 		return False
 	return True
 
