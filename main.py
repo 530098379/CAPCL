@@ -362,6 +362,7 @@ if __name__ == "__main__":
 					# 其他的时候，从数组7获取pdf的链接
 					else:
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
+				pdf_url = pdf_url.replace(" ", "")
 				# print("pdf_url:" + pdf_url, flush = True)
 				# print("html_url:" + html_url, flush = True)
 				# 解析pdf文件
