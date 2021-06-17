@@ -7,7 +7,6 @@ import io
 import sys
 import re
 import xlwt
-import xlrd
 import os
 import time
 import datetime
@@ -230,8 +229,8 @@ def read_pdf(pdf_url, sheet, count):
 		fp.close()
 		if(os.path.exists(pdf_file_path)):
 			os.remove(pdf_file_path)
-	except:
-		print("pdf 解析失败", flush = True)
+	except Exception:
+		print(Exception, flush = True)
 		return False
 	return True
 
@@ -331,10 +330,10 @@ if __name__ == "__main__":
 				CAPDataArray = [x for x in CAPDataArray if x!='']
 				CAPDataArray = [x for x in CAPDataArray if x!='\xa0']
 
-				print("Union Name:" + str(CAPDataArray[0]), flush = True)
-				print("Affiliate:" + CAPDataArray[1], flush = True)
-				print("Date:" + CAPDataArray[2], flush = True)
-				print("--------------------------")
+				# print("Union Name:" + str(CAPDataArray[0]), flush = True)
+				# print("Affiliate:" + CAPDataArray[1], flush = True)
+				# print("Date:" + CAPDataArray[2], flush = True)
+				# print("--------------------------")
 				sheet.write(count,0, CAPDataArray[0]) # row, column, value
 				sheet.write(count,1, CAPDataArray[1])
 				sheet.write(count,2, CAPDataArray[2])
@@ -361,8 +360,8 @@ if __name__ == "__main__":
 					# 其他的时候，从数组7获取pdf的链接
 					else:
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
-				print("pdf_url:" + pdf_url, flush = True)
-				print("html_url:" + html_url, flush = True)
+				# print("pdf_url:" + pdf_url, flush = True)
+				# print("html_url:" + html_url, flush = True)
 				# 解析pdf文件
 				ret = read_pdf(pdf_url, sheet, count)
 				# 年小于2017年，pdf解析失败的时候，调用html解析
