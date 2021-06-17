@@ -103,8 +103,9 @@ def read_html(html_url,sheet, count):
 
 def read_pdf(pdf_url, sheet, count):
 	try:
-		r = requests.get(pdf_url)
+		r = requests.get(pdf_url, timeout = 60)
 		if r.status_code != 200:
+			print("访问异常:" + str(r.status_code), flush = True)
 			return False
 		
 		pdf_file_path = os.getcwd() + r"\temp.pdf";
