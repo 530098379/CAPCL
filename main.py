@@ -230,7 +230,7 @@ def read_pdf(pdf_url, sheet, count):
 		fp.close()
 		if(os.path.exists(pdf_file_path)):
 			os.remove(pdf_file_path)
-	except Exception:
+	except:
 		print("pdf 解析失败", flush = True)
 		#print(Exception, flush = True)
 		return False
@@ -363,7 +363,7 @@ if __name__ == "__main__":
 					else:
 						pdf_url = pdf_url + (j.contents)[7].select("a")[0]['href']
 				pdf_url = pdf_url.replace(" ", "%20")
-				print("pdf_url:" + pdf_url, flush = True)
+				#print("pdf_url:" + pdf_url, flush = True)
 				# print("html_url:" + html_url, flush = True)
 				# 解析pdf文件
 				ret = read_pdf(pdf_url, sheet, count)
