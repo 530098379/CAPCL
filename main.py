@@ -198,10 +198,10 @@ def read_pdf(pdf_url, sheet, count):
 						if re.match("^[0-9].*", out.get_text()):
 							REC_cnt = REC_cnt + 1
 
-					if reporting_flag and "for the fiscal year ended" in out.get_text() \
+					if reporting_flag and ("for the fiscal year ended" in out.get_text() \
 						or "forthefiscalyearended" in out.get_text().strip().replace(" ", "").replace("\n", "") \
 						or "forthefiscalyearsending" in out.get_text().strip().replace(" ", "").replace("\n", "") \
-						or "forthefiscalyearending" in out.get_text().strip().replace(" ", "").replace("\n", ""):
+						or "forthefiscalyearending" in out.get_text().strip().replace(" ", "").replace("\n", "")):
 						tempArray = out.get_text().split(".")
 						reporting_flag = False
 						for rep_str in tempArray:
