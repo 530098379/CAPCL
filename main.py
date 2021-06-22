@@ -103,15 +103,15 @@ def read_html(html_url,sheet, count):
 
 def read_pdf(pdf_url, sheet, count):
 	try:
-		r = requests.get(pdf_url, timeout = 60)
-		if r.status_code != 200:
-			print("访问异常:" + str(r.status_code), flush = True)
-			return False
+		# r = requests.get(pdf_url, timeout = 60)
+		# if r.status_code != 200:
+		# 	print("访问异常:" + str(r.status_code), flush = True)
+		# 	return False
 		
-		pdf_file_path = os.getcwd() + r"\temp.pdf";
-		with open(pdf_file_path, 'wb') as f:
-			f.write(r.content)
-		#pdf_file_path = r"C:\Work\python\CAPCL\BBF_LL114_11-05-20_Redacted.pdf"
+		# pdf_file_path = os.getcwd() + r"\temp.pdf";
+		# with open(pdf_file_path, 'wb') as f:
+		# 	f.write(r.content)
+		pdf_file_path = r"C:\Work\python\CAPCL\CWA_LU2390_09-28-20_Redacted.pdf"
 		fp = open(pdf_file_path,'rb')
 		# 创建一个与文档关联的解释器
 		parser = PDFParser(fp)
@@ -198,11 +198,17 @@ def read_pdf(pdf_url, sheet, count):
 						if re.match("^[0-9].*", out.get_text()):
 							REC_cnt = REC_cnt + 1
 
-					if reporting_flag and "for the fiscal year ended" in out.get_text():
+					if reporting_flag and "for the fiscal year ended" in out.get_text() \
+						or "forthefiscalyearended" in out.get_text().strip().replace(" ", "").replace("\n", "") \
+						or "forthefiscalyearsending" in out.get_text().strip().replace(" ", "").replace("\n", "") \
+						or "forthefiscalyearending" in out.get_text().strip().replace(" ", "").replace("\n", ""):
 						tempArray = out.get_text().split(".")
 						reporting_flag = False
 						for rep_str in tempArray:
-							if "for the fiscal year ended" in rep_str:
+							if "for the fiscal year ended" in rep_str \
+								or "forthefiscalyearended" in rep_str.strip().replace(" ", "").replace("\n", "") \
+								or "forthefiscalyearending" in rep_str.strip().replace(" ", "").replace("\n", "") \
+								or "forthefiscalyearsending" in rep_str.strip().replace(" ", "").replace("\n", ""):
 								sheet.write(count, 7, rep_str)
 								break
 						
