@@ -103,15 +103,15 @@ def read_html(html_url,sheet, count):
 
 def read_pdf(pdf_url, sheet, count):
 	try:
-		r = requests.get(pdf_url, timeout = 60)
-		if r.status_code != 200:
-			print("访问异常:" + str(r.status_code), flush = True)
-			return False
+		# r = requests.get(pdf_url, timeout = 60)
+		# if r.status_code != 200:
+		# 	print("访问异常:" + str(r.status_code), flush = True)
+		# 	return False
 		
-		pdf_file_path = os.getcwd() + r"\temp.pdf";
-		with open(pdf_file_path, 'wb') as f:
-			f.write(r.content)
-		#pdf_file_path = r"C:\Work\python\CAPCL\RLCA_LU12_08-28-20_Redacted.pdf"
+		# pdf_file_path = os.getcwd() + r"\temp.pdf";
+		# with open(pdf_file_path, 'wb') as f:
+		# 	f.write(r.content)
+		pdf_file_path = r"C:\Work\python\CAPCL\AmericanLongshormenAsnofWest_LU1482_01-20-20_Redacted.pdf"
 		fp = open(pdf_file_path,'rb')
 		# 创建一个与文档关联的解释器
 		parser = PDFParser(fp)
@@ -199,10 +199,13 @@ def read_pdf(pdf_url, sheet, count):
 							REC_cnt = REC_cnt + 1
 
 					if reporting_flag and "for the fiscal year ended" in out.get_text():
+						tempArray = out.get_text().split(".")
 						reporting_flag = False
-						str_strat = out.get_text().rfind(".") + len(".")
-						sheet.write(count, 7, (out.get_text())[str_strat:].strip())
-
+						for rep_str in tempArray:
+							if "for the fiscal year ended" in rep_str:
+								sheet.write(count, 7, rep_str)
+								break
+						
 					if Reporting_V_flag and "Reporting Violations" in out.get_text():
 						Reporting_V_flag = False
 						REC_flag = False
