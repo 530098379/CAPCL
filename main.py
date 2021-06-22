@@ -212,10 +212,10 @@ def read_pdf(pdf_url, sheet, count):
 								sheet.write(count, 7, rep_str)
 								break
 						
-					if Reporting_V_flag and "Reporting Violations" in out.get_text() \
-						or Reporting_V_flag and "Reporting Violation" in out.get_text() \
+					if Reporting_V_flag and ("Reporting Violations" in out.get_text() \
+						or "Reporting Violation" in out.get_text() \
 						or "ReportingViolations" in out.get_text().strip().replace(" ", "").replace("\n", "") \
-						or "ReportingViolation" in out.get_text().strip().replace(" ", "").replace("\n", ""):
+						or "ReportingViolation" in out.get_text().strip().replace(" ", "").replace("\n", "")):
 						Reporting_V_flag = False
 						REC_flag = False
 						REP_flag = True
